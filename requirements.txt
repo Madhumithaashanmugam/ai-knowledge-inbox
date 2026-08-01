@@ -1,0 +1,30 @@
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+
+# Database
+sqlalchemy==2.0.42
+
+# Validation
+pydantic==2.11.7
+
+# Environment variables
+python-dotenv==1.1.1
+
+# HTTP client (fetch URLs + call Ollama)
+httpx==0.28.1
+
+# HTML parsing
+beautifulsoup4==4.13.4
+lxml==6.0.0
+
+# Embeddings
+sentence-transformers==5.1.0
+
+# Numerical operations
+numpy==2.3.2
+
+# Logging
+loguru==0.7.3
+
+# Optional: Multipart form support
+python-multipart==0.0.20
