@@ -282,35 +282,5 @@ These errors are returned with appropriate HTTP status codes such as 400, 408, 4
 
 ---
 
-## 🔮 Future Improvements
 
-Planned enhancements include:
-- User authentication and authorization
-- Background ingestion jobs
-- Streaming LLM responses
-- Hybrid search with keyword + semantic retrieval
-- Vector database support such as FAISS or ChromaDB
-- Redis caching
-- File upload support for PDF and DOCX documents
-- Multi-user support
-- Conversation history
-- Advanced search filters
-- Admin dashboard
 
----
-
-## 📸 Screenshots
-
-Placeholder previews for the UI experience:
-
-- Home Page
-- Add Knowledge
-- Knowledge Library
-- Ask AI
-- AI Response
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
