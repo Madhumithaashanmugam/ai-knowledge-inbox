@@ -1,3 +1,8 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 def create_chunks(
     text: str,
     chunk_size: int = 1000,
@@ -10,7 +15,10 @@ def create_chunks(
     - overlap: Characters shared between consecutive chunks.
     """
 
+    logger.info("Starting text chunking.")
+
     if not text.strip():
+        logger.warning("Received empty text. No chunks created.")
         return []
 
     text = " ".join(text.split())
@@ -38,5 +46,10 @@ def create_chunks(
 
         if start < 0:
             start = 0
+
+    logger.info(
+        "Chunking completed successfully. Created %d chunks.",
+        len(chunks)
+    )
 
     return chunks

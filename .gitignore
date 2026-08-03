@@ -1,0 +1,22 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Database
+knowledge.db
+
+# Environment variables
+.env
+
+# Testing & tooling
+.pytest_cache/
+.mypy_cache/
+
+# macOS / Windows
+.DS_Store
+Thumbs.db

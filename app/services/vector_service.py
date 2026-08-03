@@ -1,6 +1,9 @@
 import json
+import logging
 
 from sklearn.metrics.pairwise import cosine_similarity
+
+logger = logging.getLogger(__name__)
 
 
 def find_similar_chunks(
@@ -28,6 +31,11 @@ def find_similar_chunks(
         ]
     """
 
+    logger.info(
+        "Starting vector search across %d chunks.",
+        len(chunks)
+    )
+
     scored_chunks = []
 
     for chunk in chunks:
@@ -52,15 +60,14 @@ def find_similar_chunks(
         reverse=True
     )
 
-    print("\n========== VECTOR SEARCH ==========")
+    logger.info("Top similarity scores:")
 
-    for item in scored_chunks[:10]:
-        print(
-            f"Score: {item['score']:.4f} | "
-            f"{item['chunk'].chunk_text[:100]}"
+    for index, item in enumerate(scored_chunks[:10], start=1):
+        logger.info(
+            "Rank %d | Score: %.4f",
+            index,
+            item["score"]
         )
-
-    print("===================================\n")
 
     # Remove weak matches
     filtered_chunks = [
@@ -68,5 +75,16 @@ def find_similar_chunks(
         for item in scored_chunks
         if item["score"] >= min_score
     ]
+
+    logger.info(
+        "%d chunks passed the similarity threshold of %.2f.",
+        len(filtered_chunks),
+        min_score
+    )
+
+    logger.info(
+        "Returning top %d matching chunks.",
+        min(top_k, len(filtered_chunks))
+    )
 
     return filtered_chunks[:top_k]

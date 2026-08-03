@@ -1,4 +1,5 @@
 import json
+import logging
 
 from sqlalchemy.orm import Session
 
@@ -10,19 +11,30 @@ from app.services.embedding_service import generate_embeddings
 from app.services.llm_service import generate_summary, generate_title
 from app.services.url_service import fetch_url_content
 
+logger = logging.getLogger(__name__)
+
 
 def create_item(db: Session, item: ItemCreate):
+
+    logger.info("Starting item ingestion.")
 
     original_source = None
     content = item.content
 
     # Fetch webpage if URL
     if item.source_type == SourceType.url:
+        logger.info("Fetching content from URL: %s", item.content)
+
         original_source = item.content
         content = fetch_url_content(item.content)
 
+        logger.info("Successfully fetched URL content.")
+
     # Generate AI metadata
+    logger.info("Generating AI title.")
     title = generate_title(content)
+
+    logger.info("Generating AI summary.")
     summary = generate_summary(content)
 
     # Save item
@@ -38,11 +50,17 @@ def create_item(db: Session, item: ItemCreate):
     db.commit()
     db.refresh(db_item)
 
+    logger.info("Item saved successfully with ID: %s", db_item.id)
+
     # Create chunks
     chunks = create_chunks(content)
 
+    logger.info("Created %d chunks.", len(chunks))
+
     # Generate embeddings in one request
     embeddings = generate_embeddings(chunks)
+
+    logger.info("Generated %d embeddings.", len(embeddings))
 
     chunk_objects = []
 
@@ -59,6 +77,14 @@ def create_item(db: Session, item: ItemCreate):
     db.bulk_save_objects(chunk_objects)
     db.commit()
 
+    logger.info(
+        "Successfully stored %d chunks for item ID %s.",
+        len(chunk_objects),
+        db_item.id
+    )
+
+    logger.info("Item ingestion completed successfully.")
+
     return db_item
 
 
@@ -67,12 +93,22 @@ def get_items(
     page: int = 1,
     limit: int = 9
 ):
+    logger.info(
+        "Fetching items. Page: %d, Limit: %d",
+        page,
+        limit
+    )
+
     offset = (page - 1) * limit
 
-    return (
+    items = (
         db.query(Item)
         .order_by(Item.created_at.desc())
         .offset(offset)
         .limit(limit)
         .all()
     )
+
+    logger.info("Retrieved %d items.", len(items))
+
+    return items
